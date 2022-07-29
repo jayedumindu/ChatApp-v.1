@@ -27,7 +27,7 @@ public class clientController {
         inputStream = new DataInputStream(localSocket.getInputStream());
 
         Timer timer = new Timer();
-        timer.schedule(new ListenerThread(inputStream,"client", msgPane,timer),1000,2000);
+        timer.schedule(new ListenerThread(inputStream,"server", msgPane,timer),1000,2000);
     }
 
     public void sendMsg(ActionEvent actionEvent) throws IOException {
