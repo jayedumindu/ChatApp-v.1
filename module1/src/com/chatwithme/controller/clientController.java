@@ -27,17 +27,19 @@ public class clientController {
         inputStream = new DataInputStream(localSocket.getInputStream());
 
         listener = new ListenerThread(inputStream, "server", msgPane);
-        // start listening
-        listener.run();
+        Thread listeningThread = new Thread(listener);
+        listeningThread.start();
     }
 
     public void sendMsg(ActionEvent actionEvent) throws IOException {
         String msg = msgField.getText();
+        msgPane.appendText("\nMe : " + msg);
         outputStream.writeUTF(msg);
         outputStream.flush();
         msgField.clear();
     }
 
     public void clear(ActionEvent actionEvent) {
+        msgPane.clear();
     }
 }

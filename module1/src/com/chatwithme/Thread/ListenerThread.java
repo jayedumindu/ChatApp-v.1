@@ -26,9 +26,9 @@ public class ListenerThread implements Runnable{
             try {
                 if(in.available()>0){
                     String msg = in.readUTF();
-                    msgArea.appendText(msg);
+                    msgArea.appendText("\n"+oppositionParty+" : "+msg);
                     if(msg.equals("over")){
-                        msgArea.appendText("Exiting.........");
+                        msgArea.appendText("\nExiting.........");
                         return;
                     }
                 }

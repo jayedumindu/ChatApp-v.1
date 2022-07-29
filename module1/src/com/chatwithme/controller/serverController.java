@@ -26,37 +26,47 @@ public class serverController {
 
     public void initialize() throws IOException {
         // setting up the server
-        msgPane.setText("server up and running!");
+        System.out.println("server up and running!");
         int PORT = 8000;
         serverSocket  = new ServerSocket(PORT);
         // wait for an connection to be established --> binds it to a local socket --> returns the remote socket
-        localSocket = serverSocket.accept();
-        System.out.println("connection succeeded!");
+        Thread serverWaitingThread = new Thread(() -> {
+            try {
+                localSocket = serverSocket.accept();
+                System.out.println("connection succeeded!");
 
-        outputStream = new DataOutputStream(localSocket.getOutputStream());
-        inputStream = new DataInputStream(localSocket.getInputStream());
-
-        listener = new ListenerThread(inputStream,"client", msgPane);
-        // start listening
-        listener.run();
+                outputStream = new DataOutputStream(localSocket.getOutputStream());
+                inputStream = new DataInputStream(localSocket.getInputStream());
+                listener = new ListenerThread(inputStream,"client", msgPane);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        serverWaitingThread.start();
     }
 
     public void sendMsg(ActionEvent actionEvent) throws IOException {
         String msg = msgField.getText();
+        msgPane.appendText("\nMe : " + msg);
         outputStream.writeUTF(msg);
         outputStream.flush();
         msgField.clear();
     }
 
     public void clear(ActionEvent actionEvent) {
+        msgPane.clear();
     }
 
     public void openUpClient(ActionEvent actionEvent) throws IOException {
         Stage clientStage = new Stage();
-        Scene client = new Scene(FXMLLoader.load(this.getClass().getClassLoader().getResource("com/chatwithme/view/server.fxml")));
+        Scene client = new Scene(FXMLLoader.load(this.getClass().getClassLoader().getResource("com/chatwithme/view/client.fxml")));
         clientStage.setScene(client);
         clientStage.setTitle("Client App");
         clientStage.show();
+
+        // start listening
+        Thread listeningThread = new Thread(listener);
+        listeningThread.start();
     }
 
 }
