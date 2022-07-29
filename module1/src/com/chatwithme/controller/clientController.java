@@ -18,7 +18,6 @@ public class clientController {
     DataOutputStream outputStream;
     DataInputStream inputStream;
     Socket localSocket;
-    ListenerThread listener;
 
     public void initialize() throws IOException {
         int PORT = 8000;
@@ -27,10 +26,8 @@ public class clientController {
         outputStream = new DataOutputStream(localSocket.getOutputStream());
         inputStream = new DataInputStream(localSocket.getInputStream());
 
-        listener = new ListenerThread(inputStream, "server", msgPane);
-
         Timer timer = new Timer();
-        timer.schedule(new ListenerThread(inputStream,"client", msgPane),1000,2000);
+        timer.schedule(new ListenerThread(inputStream,"client", msgPane,timer),1000,2000);
     }
 
     public void sendMsg(ActionEvent actionEvent) throws IOException {

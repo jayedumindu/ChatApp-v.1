@@ -23,7 +23,6 @@ public class serverController {
     DataInputStream inputStream;
     ServerSocket serverSocket;
     Socket localSocket;
-    ListenerThread listener;
 
     public void initialize() throws IOException {
         // setting up the server
@@ -38,7 +37,6 @@ public class serverController {
 
                 outputStream = new DataOutputStream(localSocket.getOutputStream());
                 inputStream = new DataInputStream(localSocket.getInputStream());
-                listener = new ListenerThread(inputStream,"client", msgPane);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -66,7 +64,7 @@ public class serverController {
         clientStage.show();
 
         Timer timer = new Timer();
-        timer.schedule(new ListenerThread(inputStream,"client", msgPane),1000, 2000);
+        timer.schedule(new ListenerThread(inputStream,"client", msgPane,timer),1000, 2000);
     }
 
 }

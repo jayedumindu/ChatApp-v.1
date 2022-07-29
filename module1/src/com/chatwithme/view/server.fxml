@@ -24,5 +24,10 @@
          </font>
       </Text>
       <Button layoutX="304.0" layoutY="510.0" mnemonicParsing="false" onAction="#openUpClient" text="+" />
+      <Text layoutX="100.0" layoutY="419.0" strokeType="OUTSIDE" strokeWidth="0.0" text="send &quot;over&quot; to stop the conversation">
+         <font>
+            <Font name="System Bold" size="9.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

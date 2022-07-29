@@ -4,6 +4,7 @@ import javafx.scene.control.TextArea;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class ListenerThread extends TimerTask {
@@ -11,11 +12,13 @@ public class ListenerThread extends TimerTask {
     String oppositionParty;
     DataInputStream in;
     TextArea msgArea;
+    Timer timer;
 
-    public ListenerThread(DataInputStream inputStream, String identifier, TextArea msgArea){
+    public ListenerThread(DataInputStream inputStream, String identifier, TextArea msgArea, Timer timer){
         in = inputStream;
         oppositionParty = identifier;
         this.msgArea = msgArea;
+        this.timer = timer;
     }
 
     @Override
@@ -28,6 +31,7 @@ public class ListenerThread extends TimerTask {
                     msgArea.appendText("\n"+oppositionParty+" : "+msg);
                     if(msg.equals("over")){
                         msgArea.appendText("\nExiting.........");
+                        timer.cancel();
                         return;
                     }
                 }
