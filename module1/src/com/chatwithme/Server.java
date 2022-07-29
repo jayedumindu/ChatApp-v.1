@@ -1,48 +1,59 @@
 package com.chatwithme;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class Server {
-    public static void main(String[] args) throws IOException {
 
-        int PORT = 8000;
-        ServerSocket serverSocket = new ServerSocket(PORT);
+        int PORT;
+        ServerSocket serverSocket;
+        DataOutputStream outputStream;
+        DataInputStream inputStream;
+        Socket localSocket;
+        ListenerThread listener;
+        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("server up and running!");
-        // wait for an connection to be established --> binds it to a local socket --> returns the remote socket
-        Socket localSocket = serverSocket.accept();
-        System.out.println("connection succeeded!");
-
-        // for I/O purposes --> encodes byte-streams (UTF-8)
-        DataOutputStream outputStream = new DataOutputStream(localSocket.getOutputStream());
-        DataInputStream inputStream = new DataInputStream(localSocket.getInputStream());
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-
-        ListenerThread listener = new ListenerThread(inputStream,"client");
-        // listening
-        listener.run();
-
-        String data;
-        // while line feed is the input --> get user feedback --> send to the other end
-        while (true){
-            data = bufferedReader.readLine();
-            if(data.equals("finish")){
-                break;
-            }
-            outputStream.writeUTF(data);
-            outputStream.flush();
+        public Server(int port){
+            PORT = port;
         }
 
-        listener.stop();
+        void configure() throws IOException {
+            System.out.println("server up and running!");
+            serverSocket  = new ServerSocket(PORT);
+            // wait for an connection to be established --> binds it to a local socket --> returns the remote socket
+            localSocket = serverSocket.accept();
+            System.out.println("connection succeeded!");
 
-        outputStream.close();
-        bufferedReader.close();
+            outputStream = new DataOutputStream(localSocket.getOutputStream());
+            inputStream = new DataInputStream(localSocket.getInputStream());
+        }
 
-        System.out.println("end of server transmission...exiting");
+        void listen(){
+            listener = new ListenerThread(inputStream,"client");
+            // listening
+            listener.run();
+        }
 
-    }
+        void startConversation(BufferedReader reader) throws IOException {
+            String data;
+            // while line feed is the input --> get user feedback --> send to the other end
+            while (true){
+                data = scanner.nextLine();
+                if(data.equals("end")){
+                    break;
+                }
+                outputStream.writeUTF(data);
+                outputStream.flush();
+            }
+            outputStream.close();
+            reader.close();
+
+            System.out.println("end of transmission...exiting");
+        }
+
 }

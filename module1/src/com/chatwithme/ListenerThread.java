@@ -7,7 +7,7 @@ public class ListenerThread implements Runnable{
 
     String oppositionParty;
     DataInputStream in;
-    boolean stop = true;
+    boolean run = true;
 
     public ListenerThread(DataInputStream inputStream, String identifier){
         in = inputStream;
@@ -19,12 +19,12 @@ public class ListenerThread implements Runnable{
         // listens for other parties to communicate --> infinite loop
         System.out.println("listening from " + oppositionParty);
         String message;
-        while(stop){
+        while(run){
             try {
                 // if there is data to read....
-                while(in.available()>0) {
+                if(in.available()>0) {
                     message = in.readUTF();
-                    if (message.equals("finish")) {
+                    if (message.equals("end")) {
                         System.out.println("stopped listening from " + oppositionParty);
                         in.close();
                         return;
@@ -40,7 +40,7 @@ public class ListenerThread implements Runnable{
 
     // to terminate the process from outside
     public void stop(){
-        stop = false;
+        run = false;
     }
 
 

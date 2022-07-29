@@ -1,42 +1,50 @@
 package com.chatwithme;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class Client {
-    public static void main(String[] args) throws IOException {
 
-        int PORT = 8000;
-        Socket socket = new Socket("localhost", PORT);
+        int PORT;
+        DataOutputStream outputStream;
+        DataInputStream inputStream;
+        Socket localSocket;
+        ListenerThread listener;
 
-        // for I/O purposes
-        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-
-        ListenerThread listener = new ListenerThread(inputStream,"server");
-        // listening
-        listener.run();
-
-        // in UTF-8
-        String data;
-        // while line feed is the input --> get user feedback --> send to the other end
-        while (true){
-            data = bufferedReader.readLine();
-            if(data.equals("finish")){
-                break;
-            }
-            outputStream.writeUTF(data);
-            outputStream.flush();
+        public Client(int port){
+            PORT = port;
         }
 
-        listener.stop();
-        outputStream.close();
-        bufferedReader.close();
+        void configure() throws IOException {
+            localSocket = new Socket("localhost",PORT);
 
-        System.out.println("end of client transmission...exiting");
+            outputStream = new DataOutputStream(localSocket.getOutputStream());
+            inputStream = new DataInputStream(localSocket.getInputStream());
+        }
 
+        void listen () {
+            listener = new ListenerThread(inputStream, "server");
+            // listening
+            listener.run();
+        }
 
-    }
+        void startConversation (BufferedReader reader) throws IOException {
+            String data;
+            // while line feed is the input --> get user feedback --> send to the other end
+            while (true) {
+                data = reader.readLine();
+                if (data.equals("end")) {
+                    break;
+                }
+                outputStream.writeUTF(data);
+                outputStream.flush();
+            }
+            outputStream.close();
+            reader.close();
+
+            System.out.println("end of transmission...exiting");
+        }
 }
