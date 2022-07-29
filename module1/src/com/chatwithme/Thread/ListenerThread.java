@@ -4,8 +4,9 @@ import javafx.scene.control.TextArea;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.TimerTask;
 
-public class ListenerThread implements Runnable{
+public class ListenerThread extends TimerTask {
 
     String oppositionParty;
     DataInputStream in;
@@ -20,9 +21,7 @@ public class ListenerThread implements Runnable{
     @Override
     public void run() {
         // listens for other parties to communicate --> infinite loop
-        System.out.println("listening from " + oppositionParty);
         String message;
-        while(true){
             try {
                 if(in.available()>0){
                     String msg = in.readUTF();
@@ -35,7 +34,7 @@ public class ListenerThread implements Runnable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
     }
 
 }

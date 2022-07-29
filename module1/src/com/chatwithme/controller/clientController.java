@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Timer;
 
 public class clientController {
     public JFXTextField msgField;
@@ -27,8 +28,9 @@ public class clientController {
         inputStream = new DataInputStream(localSocket.getInputStream());
 
         listener = new ListenerThread(inputStream, "server", msgPane);
-        Thread listeningThread = new Thread(listener);
-        listeningThread.start();
+
+        Timer timer = new Timer();
+        timer.schedule(new ListenerThread(inputStream,"client", msgPane),1000,2000);
     }
 
     public void sendMsg(ActionEvent actionEvent) throws IOException {

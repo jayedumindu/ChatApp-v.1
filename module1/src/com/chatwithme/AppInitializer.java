@@ -17,7 +17,7 @@ public class AppInitializer extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        Scene server = new Scene(FXMLLoader.load(getClass().getResource("./view/server.fxml")));
+        Scene server = new Scene(FXMLLoader.load(this.getClass().getClassLoader().getResource("com/chatwithme/view/server.fxml")));
         primaryStage.setScene(server);
         primaryStage.setTitle("Server App");
         primaryStage.centerOnScreen();

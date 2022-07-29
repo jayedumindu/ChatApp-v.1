@@ -13,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Timer;
 
 public class serverController {
     public TextArea msgPane;
@@ -64,9 +65,8 @@ public class serverController {
         clientStage.setTitle("Client App");
         clientStage.show();
 
-        // start listening
-        Thread listeningThread = new Thread(listener);
-        listeningThread.start();
+        Timer timer = new Timer();
+        timer.schedule(new ListenerThread(inputStream,"client", msgPane),1000, 2000);
     }
 
 }
