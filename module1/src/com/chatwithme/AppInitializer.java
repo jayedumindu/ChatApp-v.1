@@ -1,7 +1,12 @@
 package com.chatwithme;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class AppInitializer extends Application {
 
@@ -10,7 +15,13 @@ public class AppInitializer extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+
+        Scene server = new Scene(FXMLLoader.load(this.getClass().getClassLoader().getResource("com/chatwithme/view/server.fxml")));
+        primaryStage.setScene(server);
+        primaryStage.setTitle("Server App");
+        primaryStage.centerOnScreen();
+        primaryStage.show();
 
     }
 }
