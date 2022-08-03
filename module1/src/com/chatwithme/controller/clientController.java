@@ -33,11 +33,11 @@ public class clientController {
         //binding the  socket with the inetAddress and port number
         localSocket.bind(socketAddress);
 
-        System.out.println("Connected to : " + localSocket.getPort() + " from " + localSocket.getLocalAddress() + " port : " + localSocket.getLocalPort());
-
         // address to the destination --> localhost:8000
         SocketAddress destinationAddress =new InetSocketAddress(inetAddress, 8000);
         localSocket.connect(destinationAddress);
+
+        System.out.println("Connected to : " + localSocket.getPort() + " from " + localSocket.getLocalAddress() + " port : " + localSocket.getLocalPort());
 
         outputStream = new DataOutputStream(localSocket.getOutputStream());
         inputStream = new DataInputStream(localSocket.getInputStream());
