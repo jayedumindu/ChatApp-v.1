@@ -8,7 +8,10 @@ import javafx.scene.control.TextArea;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.Timer;
 
 public class clientController {
@@ -20,8 +23,21 @@ public class clientController {
     Socket localSocket;
 
     public void initialize() throws IOException {
-        int PORT = 8000;
-        localSocket = new Socket("localhost",PORT);
+
+        localSocket = new Socket();
+        InetAddress inetAddress=InetAddress.getByName("localhost");
+        //the port should be greater or equal to 0, else it will throw an error
+        int port=6000;
+        //calling the constructor of the SocketAddress class
+        SocketAddress socketAddress=new InetSocketAddress(inetAddress, port);
+        //binding the  socket with the inetAddress and port number
+        localSocket.bind(socketAddress);
+
+        System.out.println("Connected to : " + localSocket.getPort() + " from " + localSocket.getLocalAddress() + " port : " + localSocket.getLocalPort());
+
+        // address to the destination --> localhost:8000
+        SocketAddress destinationAddress =new InetSocketAddress(inetAddress, 8000);
+        localSocket.connect(destinationAddress);
 
         outputStream = new DataOutputStream(localSocket.getOutputStream());
         inputStream = new DataInputStream(localSocket.getInputStream());
